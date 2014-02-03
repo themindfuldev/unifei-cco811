@@ -1,0 +1,160 @@
+; Sistema OPS5 com interface Java
+;
+; CCO811 - IA II
+; Alunos:
+; Andre Carvalho Silveira	 	12616
+; Thiago Felipe de M. Matias		12642
+; Tiago Romero Garcia			12643
+; CCO2004
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; Declarações
+
+(literalize Contexto fase estado)
+(literalize Ingrediente agua aguatemp cafepo cafegrao acucar)
+(literalize Equipamento cafeteira)
+(literalize Dose copo tamanho)
+(literalize Pedido tipo)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; Produções
+;(Contexto ^fase [hibernacao, prepreparo, preparo] ^estado [ok, not])
+;(Equipamento ^cafeteira [on, off])
+;(Dose ^copo [1, 2] ^tamanho [copinho, grande])
+;(Pedido ^tipo [amargo, medio, forte])
+;(Ingrediente ^agua [completar, bom, demais] ^aguatemp [fria, quente, vapor] ^cafepo [completar, bom, demais] ^cafegrao [completar, bom, demais] ^acucar [completar, bom, demais])
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(p cafe01sucesso
+	(Contexto ^fase hibernacao ^estado ok)       
+	(Equipamento ^cafeteira on )       	
+-->
+	(make Contexto ^fase prepreparo ^estado ok)
+)
+
+(p cafe01erroA
+	(Contexto ^fase hibernacao ^estado ok)
+	(Equipamento ^cafeteira off )       	
+-->
+	(make Contexto ^fase prepreparo ^estado not)
+)
+
+(p cafe02not
+	(Contexto ^fase prepreparo ^estado not)
+-->
+	(write |NOT! Fase de Hibernacao nao satisfeita, cafeteira desligada.| (crlf))
+)
+
+(p cafe02sucesso
+	(Contexto ^fase prepreparo ^estado ok)
+	(Ingrediente ^agua bom ^aguatemp quente ^cafepo bom ^cafegrao bom ^acucar bom)
+-->
+	(make Contexto ^fase preparo ^estado ok)
+)
+
+(p cafe02erroA
+	(Contexto ^fase prepreparo ^estado ok)
+	(Ingrediente ^agua completar)
+-->
+	(write |Complete a agua.| (crlf))
+	(make Contexto ^fase preparo ^estado not)
+)
+
+(p cafe02erroB
+	(Contexto ^fase prepreparo ^estado ok)
+	(Ingrediente ^agua demais)
+-->
+	(write |Retire o excesso de agua.| (crlf))
+	(make Contexto ^fase preparo ^estado not)
+)
+
+(p cafe02erroC
+	(Contexto ^fase prepreparo ^estado ok)
+	(Ingrediente ^aguatemp fria)
+-->
+	(write |Esquente a agua.| (crlf))
+	(make Contexto ^fase preparo ^estado not)
+)
+
+(p cafe02erroD
+	(Contexto ^fase prepreparo ^estado ok)
+	(Ingrediente ^aguatemp vapor)
+-->
+	(write |Resfrie a agua vaporizada.| (crlf))
+	(make Contexto ^fase preparo ^estado not)
+)
+
+(p cafe02erroE
+	(Contexto ^fase prepreparo ^estado ok)
+	(Ingrediente ^cafepo completar)
+-->
+	(write |Complete o po de cafe.| (crlf))
+	(make Contexto ^fase preparo ^estado not)
+)
+
+(p cafe02erroF
+	(Contexto ^fase prepreparo ^estado ok)
+	(Ingrediente ^cafepo demais)
+-->
+	(write |Retire o excesso de po de cafe.| (crlf))
+	(make Contexto ^fase preparo ^estado not)
+)
+
+(p cafe02erroG
+	(Contexto ^fase prepreparo ^estado ok)
+	(Ingrediente ^cafegrao completar)
+-->
+	(write |Complete o grao de cafe.| (crlf))
+	(make Contexto ^fase preparo ^estado not)
+)
+
+(p cafe02erroH
+	(Contexto ^fase prepreparo ^estado ok)
+	(Ingrediente ^cafegrao demais)
+-->
+	(write |Retire o excesso de grao de cafe.| (crlf))
+	(make Contexto ^fase preparo ^estado not)
+)
+
+(p cafe02erroI
+	(Contexto ^fase prepreparo ^estado ok)
+	(Ingrediente ^acucar completar)
+-->
+	(write |Complete o acucar.| (crlf))
+	(make Contexto ^fase preparo ^estado not)
+)
+
+(p cafe02erroJ
+	(Contexto ^fase prepreparo ^estado ok)
+	(Ingrediente ^acucar demais)
+-->
+	(write |Retire o excesso de acucar.| (crlf))
+	(make Contexto ^fase preparo ^estado not)
+)
+
+(p cafe03not
+	(Contexto ^fase preparo ^estado not)
+-->
+	(write |NOT! Fase de Pre-preparo nao satisfeita, ingredientes inadequados.| (crlf))
+)
+
+(p cafe03sucesso1copo
+	(Contexto ^fase preparo ^estado ok)
+	(Dose ^copo 1 ^tamanho <tamanho>)
+	(Pedido ^tipo <tipo>)
+-->
+	(write |O cafe foi servido.| (crlf))
+	(write 1 copo tamanho <tamanho> de cafe tipo <tipo> esta a mesa. (crlf))
+)
+
+(p cafe03sucesso2copos
+	(Contexto ^fase preparo ^estado ok)
+	(Dose ^copo 2 ^tamanho <tamanho>)
+	(Pedido ^tipo <tipo>)
+-->
+	(write |O cafe foi servido.| (crlf))
+	(write 2 copos tamanho <tamanho> de cafe tipo <tipo> estao a mesa. (crlf))
+)
